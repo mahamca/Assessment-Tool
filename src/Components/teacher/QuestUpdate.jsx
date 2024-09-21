@@ -1,51 +1,46 @@
-import React, { useState , useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { blue } from '@mui/material/colors';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-const CreateForm = () => {
+const QuestUpdate = () => {
 
-    const[ data,setData] =useState([])
+
     const [name,setName] =useState('')
-    const [desc,setDesc] = useState('')
-  
-    
-    const navigate=useNavigate()
+    const [desc,setDesc] =useState('')
+    const [nameDetails,setNameDetails]=useState([])
+    const [data,setData]=useState([])
+   const params =useParams()
+   const {id}=params
 
-    
-    const submit=()=>{
-               
-        setData([...data,{
-            level:"",
-            question:"",
-            option1:"",
-            option2:"",
-            option3:"",
-            ans:""
+    useEffect(()=>{
+        axios.get(`http://127.0.0.1:4002/java/${id}`)
+        .then(response=>{setNameDetails(response.data),
+             setName(response.data[0].name),
+             setDesc(response.data[0].des),
+            setData(response.data[1])})
+        .catch(error=>console.log(error))
+       },[])
+
+
+       const AddNewQuestions=(event)=>{
+        event.preventDefault()
+      
+        setData([...data, {
+          new:true,
+          update:false,
+          delete:false,
+          existing:false,
+          product:'',
+          quantity:''
         }])
-    }
+        
+      }
 
-    
 
-const submitHandler=(event)=>{
-  event.preventDefault()
-  console.log();
-  
-  const dataset=[{
-    userid:localStorage.getItem('Id'),
-    name:name,
-    des:desc,
-       }, 
-    data
-]
-  axios.post('http://127.0.0.1:4002/java/add/',dataset)
-  .then(navigate('/planlist/'))
-  .catch(error=>console.log("error"))
-}
 
-    const UpdateFields =(event,index,field)=>{
+       const UpdateFields =(event,index,field)=>{
         const new_data =[...data]
         if(field==="question") new_data[index].question = event.target.value
         else if(field==="level") new_data[index].level =event.target.value
@@ -56,8 +51,33 @@ const submitHandler=(event)=>{
         setData(new_data);
     }
 
+
+
+    const AddData = event => {
+        event.preventDefault()
+    
+        const dataset = [
+            {
+                name:name,
+                des:desc
+            },
+            data
+        ]
+    
+        console.log(dataset)
+    
+        axios.patch(`http://127.0.0.1:4002/java/${id}/`, dataset)
+        .then(response => {
+            console.log("data saved");
+            
+        })
+        .catch(error => console.log(error))
+    
+    }
+    
+
        
-   let inputFields = data.length>0 ? data.map((inputs,index)=>{
+       let inputFields = data.length>0 ? data.map((inputs,index)=>{
         return(
             <div key={index} style={{border: '1px solid white', 
                 borderRadius:"20px", padding: '10px',        
@@ -73,7 +93,7 @@ const submitHandler=(event)=>{
              >
               <br /><br />
                 <select class="form-select" value={inputs.level} onChange={event=>UpdateFields(event,index,"level")} aria-label="Default select example">
-                <option selected>Select the level</option>
+                <option value={inputs.ans}selected>Select the level</option>
                 <option value="1">Beginer</option>
                  <option value="2">Intermediate</option>
                   <option value="3">Advanced</option>
@@ -97,7 +117,13 @@ const submitHandler=(event)=>{
            </div>
            <input style={{width:"250px"}} type="text" value={inputs.option3} placeholder='Option 3' onChange={event=>UpdateFields(event,index,"option3")}  aria-label="Text input with radio button"/>
          </div>
-         
+         <div className="mb-3 order-box text-center">
+
+<label htmlFor="exampleFormControlInput1" className="form-label">Remove</label>
+<br />
+    <button className='btn btn-danger'>X</button>
+
+</div>
                </Box>
            </div>
 
@@ -106,12 +132,7 @@ const submitHandler=(event)=>{
 
 
   return (
-    <div ><h1>Assessment</h1>  
-
-    <input type="checkbox" value="Beginner"  />
-    <input type="checkbox" value="Intermediate" />
-    <input type="checkbox" value="Advanced" />
-
+    <div>
 <div  style={{border: '1px solid white', 
        borderRadius:"20px", padding: '10px',        
         margin: '10px', backgroundColor:"white",borderShadow:"0 4px 8px rgba(8, 4, 228, 0.1)"
@@ -125,47 +146,23 @@ const submitHandler=(event)=>{
       autoComplete="off"
     >
      
-      <TextField id="standard-basic" label="Title" value={name} variant="standard" onChange={event=>setName(event.target.value)} />
-      <TextField id="standard-basic" label="Description" value={desc} variant="standard" onChange={event=>setDesc(event.target.value)} />
+      <TextField id="standard-basic"  value={name}  variant="standard"  />
+      <TextField id="standard-basic"  value={desc}  variant="standard"  />
       
     </Box>
     </div>
-  <div style={{border: '1px solid white', // Set the border width, style, and color
-       borderRadius:"20px", padding: '10px',         // Optional: Add padding inside the border
-        margin: '10px', backgroundColor:"white",borderShadow:"0 4px 8px rgba(8, 4, 228, 0.1)"
-    }}>
-  <Box
-      component="form"
-      sx={{
-        '& > :not(style)': { m: 1, width: '120ch' },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-       
-       
-
-
-<div>
-<input type="button" className='btn btn-info float-start' onClick={submit}  value={"+Add Questions"}/>
-
+    <div className='order-add-button'>
+                        <button className='btn btn-info float-end new-product' onClick={event => AddNewQuestions(event)}>+ Add New Questions</button>
+                    </div>
 {inputFields}
-</div>
-
 
 <div className="mb-3 text-center m-5">
 
-      <input type="submit" value="submit" onClick={event=>submitHandler(event)} className="btn btn-primary" id="exampleFormControlInput1" />
+                        <input type="submit" className="btn btn-primary" id="exampleFormControlInput1" onClick={event => AddData(event)}/>
 
                     </div>
-      </Box>
-  </div>
-   
-
-
-
     </div>
   )
 }
 
-export default CreateForm
+export default QuestUpdate

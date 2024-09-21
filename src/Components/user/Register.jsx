@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 // import { Radio } from 'antd';
 import {Radio} from 'antd'
+import Popup from '../Popup'
 
 
 const Register = ({setLogin,setSide}) => {
@@ -14,6 +15,15 @@ const Register = ({setLogin,setSide}) => {
     const [Uname,setUName] = useState('')
     const [pwd,setPwd] = useState('')
     const [gender, setGender] = useState('male');
+    const [showModel,setShowModel] = useState(false)
+    const [msg,setMsg]=useState('')
+
+
+    const closeModel=()=>{
+      setShowModel(false)
+      navigate('/login/')
+          
+    }
 
     setLogin(false)
     setSide(false)
@@ -36,11 +46,20 @@ const Submit =(event)=>{
         last_name:lname,
         phone_no:phone_no,
         gender:gender,
-        user_name : Uname,
+        username : Uname,
         password:pwd
     }
-    axios.post('http://127.0.0.1:4002/register/create/',dataset)
-    .then(response=>navigate('/'))
+    axios.post('http://127.0.0.1:4002/user/create/',dataset)
+    .then(response=>{
+      setMsg(response.data.message)
+      if(response.data.status===true){
+        setShowModel(true)
+      
+      }
+      else{
+        setShowModel(true)
+      }
+    })
     .catch(error=>console.log(error))
 }
 
@@ -49,7 +68,9 @@ const Submit =(event)=>{
   return (
     <div className='regcontain'>
       
-    
+      <Popup show={showModel} handleClose={closeModel}>
+    <p className='text-danger'>{msg} </p>
+  </Popup>
     
         <form className='login-form'>
           <div className='form-group'> 

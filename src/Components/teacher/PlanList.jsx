@@ -13,16 +13,20 @@ const PlanList = () => {
 
 useEffect(()=>{
   axios.get('http://127.0.0.1:4002/java/all/')
-  .then(response=>setAssessData(response.data))
+  .then(response=> setAssessData(response.data.filter(java=>java.userid===localStorage.getItem("Id"))))
   .catch(error=>console.log(error))
-})
+},[])
 
+
+// console.log(localStorage.getItem("Id"));
+
+// console.log(setAssessData(assessData.filter(java=>java.userid===localStorage.getItem("Id"))));
+
+// console.log(localStorage.getItem("id"));
+ 
 
 let data= assessData.length>0? assessData.map((java,index)=>
-<SingleAssessment key={java._id} index={index} java={java} > </SingleAssessment>
-)
-
- : <tr><td>No data</td></tr>
+<SingleAssessment key={java._id} index={index} java={java} > </SingleAssessment>) : <tr><td>No data</td></tr>
 
   return (
     <div>

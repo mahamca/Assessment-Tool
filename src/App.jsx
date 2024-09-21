@@ -56,7 +56,10 @@ import QuestView from './Components/teacher/QuestView';
 import Shareform from './Components/teacher/Shareform';
 import Thank from './Components/teacher/Thank';
 import Timer from './Components/Timer';
-import ShareMail from './Components/ShareMail';
+import ShareMail from './Components/teacher/ShareMail';
+import QuestUpdate from './Components/teacher/QuestUpdate';
+
+
 
 
 
@@ -97,7 +100,9 @@ const App = () => {
               <Route path='/shareform/' element={<Shareform/>}/>
               <Route path='/thank/' element={<Thank/>}/>
               <Route path='/timer/' element={<Timer initialMinutes={10}/>}/>
-              <Route path="/mail/" element={<ShareMail/>}/>
+              <Route path="/sharemail/" element={<ShareMail/>}/>
+              <Route path='/questupdate/:id/' element={<QuestUpdate/>}/>
+              
               
               
               {/* <Route path='/sidebar/' element={<Sidebar/>}/> */}

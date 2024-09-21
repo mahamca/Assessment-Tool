@@ -32,7 +32,7 @@ useEffect(()=>{
        
           <button className="btn btn-primary float-end" style={{marginRight:"20px"}} onClick={()=>navigate('/')}  >CONTACT US</button>
       <button className="btn btn-primary float-end"style={{marginRight:"20px"}}onClick={()=>navigate('/login/')}>LOGIN</button>
-      <button className="btn btn-primary float-end"style={{marginRight:"20px"}}onClick={()=>navigate('/register/')}>HOME</button>
+      <button className="btn btn-primary float-end"style={{marginRight:"20px"}}onClick={()=>navigate('/register/')}>REGISTER</button>
       
         </nav>
       </header>
@@ -89,7 +89,7 @@ Access your skills NOW!!</h2>
     }}
     cover={<img alt="example" src="src/images/img5.jpeg" />}
   >
-    <Meta title="Europe Street beat" description="www.instagram.com" />
+    <Meta title="" description="" />
   </Card>
     </Col>
     <Col span={8}>
@@ -100,7 +100,7 @@ Access your skills NOW!!</h2>
     }}
     cover={<img alt="example" style={{height:"120px"}} src="src/images/img6.png" />}
   >
-    <Meta title="Europe Street beat" description="www.instagram.com" />
+    <Meta title="" description="" />
   </Card>
     </Col>
     <Col span={8}>
@@ -111,7 +111,7 @@ Access your skills NOW!!</h2>
     }}
     cover={<img alt="example" style={{height:"120px"}} src="src/images/img7.jpg" />}
   >
-    <Meta title="Europe Street beat" description="www.instagram.com" />
+    <Meta title="" description="" />
   </Card>
     </Col>
   </Row>

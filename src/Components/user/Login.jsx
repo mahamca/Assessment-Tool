@@ -43,6 +43,8 @@ const Submit = event =>{
     
       localStorage.setItem("Bearer",response.data.access_token)
       localStorage.setItem("Refresh",response.data.refresh_token)
+      localStorage.setItem("Id", response.data.user_data._id)
+      localStorage.setItem("Name",uname)
   
       navigate('/welcome/')
     }
