@@ -179,3 +179,11 @@ a.active{
   background-color: rgb(216, 213, 213);
   border-radius: 20px;
 }
+.container1{
+      /* Set a fixed height */
+  overflow-y: auto;   /* Add vertical scroll if needed */
+  overflow-x: auto; /* Hide horizontal scroll */
+  width: 185vh;
+  height:200vh;
+  padding-left: 0px;
+}

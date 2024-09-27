@@ -25,7 +25,7 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg bg-primary">
   <div className="container-fluid">
-    <a className="navbar-brand" href="#" style={{color:"white"}}>ASSESSMENT TOOL</a>
+    <h2><a className="navbar-brand" href="#" style={{color:"white"}}>QUIZ PARK</a></h2>
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon"></span>
     </button>
@@ -34,19 +34,20 @@ const Navbar = () => {
         <li className="nav-item">
           <NavLink className="nav-link" to={'/welcome/'}style={{color:"white"}} >Home</NavLink>
         </li>
-        <li className="nav-item">
+        {/* <li className="nav-item">
           <NavLink className="nav-link" to={'/info/'} style={{color:"white"}}>Teacher</NavLink>
-        </li>
-        <li className="nav-item">
+        </li> */}
+        {/* <li className="nav-item">
           <NavLink className="nav-link" to={'/student/'} style={{color:"white"}}>Student</NavLink>
-        </li>
-        <li className="nav-item">
+        </li> */}
+        {/* <li className="nav-item">
              
              <button className="btn btn-primary" onClick={event=>Handler(event)}>Logout</button>
              
-        </li>
+        </li> */}
       </ul>
-     
+      <h1> <p style={{textAlign:"right",color:"white"}}> Welcome {localStorage.getItem("Name")}</p></h1>
+    
     </div>
   </div>
 </nav>

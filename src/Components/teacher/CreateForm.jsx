@@ -10,6 +10,7 @@ const CreateForm = () => {
     const[ data,setData] =useState([])
     const [name,setName] =useState('')
     const [desc,setDesc] = useState('')
+    const [time,setTime] =useState('')
   
     
     const navigate=useNavigate()
@@ -37,6 +38,7 @@ const submitHandler=(event)=>{
     userid:localStorage.getItem('Id'),
     name:name,
     des:desc,
+    time:time
        }, 
     data
 ]
@@ -127,7 +129,9 @@ const submitHandler=(event)=>{
      
       <TextField id="standard-basic" label="Title" value={name} variant="standard" onChange={event=>setName(event.target.value)} />
       <TextField id="standard-basic" label="Description" value={desc} variant="standard" onChange={event=>setDesc(event.target.value)} />
+      <TextField id="standard-basic" label="set the time (Minutes)" value={time} variant="standard" onChange={event=>setTime(event.target.value)} />
       
+    
     </Box>
     </div>
   <div style={{border: '1px solid white', // Set the border width, style, and color

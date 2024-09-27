@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const QuestUpdate = () => {
 
+    const navigate=useNavigate()
 
     const [name,setName] =useState('')
     const [desc,setDesc] =useState('')
+    const [time,setTime] =useState(1)
     const [nameDetails,setNameDetails]=useState([])
     const [data,setData]=useState([])
    const params =useParams()
@@ -19,7 +21,19 @@ const QuestUpdate = () => {
         .then(response=>{setNameDetails(response.data),
              setName(response.data[0].name),
              setDesc(response.data[0].des),
-            setData(response.data[1])})
+             setTime(response.data[0].time)
+            setData(response.data[1])
+        let quest_data=response.data[1]
+        for(let quest of quest_data)
+        {
+            quest.new=false,
+            quest.update=false,
+            quest.delete=false,
+            quest.existing=true
+        }
+        
+        setData(quest_data)
+         })
         .catch(error=>console.log(error))
        },[])
 
@@ -32,8 +46,14 @@ const QuestUpdate = () => {
           update:false,
           delete:false,
           existing:false,
-          product:'',
-          quantity:''
+          ansName:id,
+          level:'',
+          question:'',
+          option1:'',
+          option2:'',
+          option3:'',
+          ans:''
+
         }])
         
       }
@@ -41,16 +61,29 @@ const QuestUpdate = () => {
 
 
        const UpdateFields =(event,index,field)=>{
-        const new_data =[...data]
-        if(field==="question") new_data[index].question = event.target.value
-        else if(field==="level") new_data[index].level =event.target.value
-        else if(field==="option1") new_data[index].option1 = event.target.value
-        else if(field==="option2") new_data[index].option2 = event.target.value
-        else if(field==="option3") new_data[index].option3 = event.target.value
-        else if(field==='ans') new_data[index].ans=event.target.value
-        setData(new_data);
+        event.preventDefault()
+        const question_duplicate=[...data]
+        question_duplicate[index].update=true
+        if(field==="question") question_duplicate[index].question = event.target.value
+        else if(field==="level") question_duplicate[index].level =event.target.value
+        else if(field==="option1") question_duplicate[index].option1 = event.target.value
+        else if(field==="option2") question_duplicate[index].option2 = event.target.value
+        else if(field==="option3") question_duplicate[index].option3 = event.target.value
+        else if(field==='ans') question_duplicate[index].ans=event.target.value
+        setData(question_duplicate);
     }
 
+    const DeleteAddedProduct = (event, index) => {
+
+        event.preventDefault()
+
+        const added_products_duplicate = [...data]
+
+        if (added_products_duplicate[index].existing === false) added_products_duplicate.splice(index, 1)
+        else  added_products_duplicate[index].delete = true
+        setData(added_products_duplicate)
+
+    }
 
 
     const AddData = event => {
@@ -59,19 +92,24 @@ const QuestUpdate = () => {
         const dataset = [
             {
                 name:name,
-                des:desc
+                des:desc,
+                time:time
             },
             data
         ]
     
-        console.log(dataset)
+        console.log(dataset, "dataset")
     
-        axios.patch(`http://127.0.0.1:4002/java/${id}/`, dataset)
-        .then(response => {
-            console.log("data saved");
-            
-        })
-        .catch(error => console.log(error))
+        // axios.patch(`http://127.0.0.1:4002/java/${id}/`, dataset)
+        // .then(response=>navigate('/planlist/'))
+        // .catch(error => console.log(error))
+
+    axios.patch(`http://127.0.0.1:4002/java/${id}`,dataset)
+    .then(response=>{
+          navigate('/planlist/')
+    })
+    .catch(error=>console.log(error))
+
     
     }
     
@@ -92,8 +130,8 @@ const QuestUpdate = () => {
                autoComplete="off"
              >
               <br /><br />
-                <select class="form-select" value={inputs.level} onChange={event=>UpdateFields(event,index,"level")} aria-label="Default select example">
-                <option value={inputs.ans}selected>Select the level</option>
+                <select className="form-select" value={inputs.level} onChange={event=>UpdateFields(event,index,"level")} aria-label="Default select example">
+                <option  selected>Select the level</option>
                 <option value="1">Beginer</option>
                  <option value="2">Intermediate</option>
                   <option value="3">Advanced</option>
@@ -101,7 +139,7 @@ const QuestUpdate = () => {
                  <TextField id="standard-basic" label="Question" variant="standard" value={inputs.question} onChange={event=>UpdateFields(event,index,"question")} />
                  <div className="input-group">
            <div className="input-group-text">
-             <input className="form-check-input mt-0" type="radio"  name='option' onChange={event=>UpdateFields(event,index,"ans")}  value={inputs.option1} aria-label="Radio button for following text input"/>
+             <input className="form-check-input mt-0" type="radio"   name='option' onChange={event=>UpdateFields(event,index,"ans")}  value={inputs.option1} aria-label="Radio button for following text input"/>
            </div>
            <input style={{width:"250px"}} type="text" value={inputs.option1} onChange={event=>UpdateFields(event,index,"option1")} placeholder='Option 1'   aria-label="Text input with radio button"/>
          </div>
@@ -121,7 +159,7 @@ const QuestUpdate = () => {
 
 <label htmlFor="exampleFormControlInput1" className="form-label">Remove</label>
 <br />
-    <button className='btn btn-danger'>X</button>
+    <button className='btn btn-danger' onClick={event => DeleteAddedProduct(event, index)}>X</button>
 
 </div>
                </Box>
@@ -133,6 +171,10 @@ const QuestUpdate = () => {
 
   return (
     <div>
+
+<div className='container-fluid'>
+     <button  className='btn btn-warning float-end' onClick={()=>navigate('/planlist/')}>Back</button>
+     </div>
 <div  style={{border: '1px solid white', 
        borderRadius:"20px", padding: '10px',        
         margin: '10px', backgroundColor:"white",borderShadow:"0 4px 8px rgba(8, 4, 228, 0.1)"
@@ -146,8 +188,9 @@ const QuestUpdate = () => {
       autoComplete="off"
     >
      
-      <TextField id="standard-basic"  value={name}  variant="standard"  />
-      <TextField id="standard-basic"  value={desc}  variant="standard"  />
+      <TextField id="standard-basic"  value={name} onChange={event=>setName(event.target.value)}  variant="standard"  />
+      <TextField id="standard-basic"  value={desc}  onChange={event=>setDesc(event.target.value)} variant="standard"  />
+      <TextField id="standard-basic"  value={time}  onChange={event=>setTime(event.target.value)} variant="standard"  />
       
     </Box>
     </div>
@@ -158,7 +201,7 @@ const QuestUpdate = () => {
 
 <div className="mb-3 text-center m-5">
 
-                        <input type="submit" className="btn btn-primary" id="exampleFormControlInput1" onClick={event => AddData(event)}/>
+<input type="submit" className="btn btn-primary" id="exampleFormControlInput1" onClick={event=>AddData(event)}/>
 
                     </div>
     </div>

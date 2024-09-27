@@ -58,6 +58,7 @@ import Thank from './Components/teacher/Thank';
 import Timer from './Components/Timer';
 import ShareMail from './Components/teacher/ShareMail';
 import QuestUpdate from './Components/teacher/QuestUpdate';
+import Score from './Components/teacher/Score';
 
 
 
@@ -96,12 +97,13 @@ const App = () => {
               <Route path="/welcome/" element={<WelcomePage/>}/>
               <Route path='/createform/' element={<CreateForm/>}/>
               <Route path='/questlist/' element={<JavaQuest/>}/>
-              <Route path='/questview/:id/' element={<QuestView initialMinutes={1}/>}/>
+              <Route path='/questview/:id/' element={<QuestView/>}/>
               <Route path='/shareform/' element={<Shareform/>}/>
               <Route path='/thank/' element={<Thank/>}/>
               <Route path='/timer/' element={<Timer initialMinutes={10}/>}/>
               <Route path="/sharemail/" element={<ShareMail/>}/>
               <Route path='/questupdate/:id/' element={<QuestUpdate/>}/>
+              <Route path='/score/:id/' element={<Score/>}/>
               
               
               

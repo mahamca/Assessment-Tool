@@ -6,7 +6,7 @@ import { Input, message } from 'antd'
 import Popup from '../Popup'
 import { useLocation } from "react-router-dom";
 
-const QuestView = ({initialMinutes}) => {
+const QuestView = ({}) => {
 
   const location = useLocation();
     const currentURL = window.location.origin + location.pathname;
@@ -22,10 +22,24 @@ const QuestView = ({initialMinutes}) => {
     const [isVisible, setIsVisible] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const [attempt,setAttempt]=useState(0)
+    const [isDataSaved, setIsDataSaved] = useState(false);
+    const [time,setTime] =useState(1)
   
-    const initialSeconds = initialMinutes * 60;
+
+    useEffect(()=>{
+      axios.get(`http://127.0.0.1:4002/java/${id}`)
+      .then(response=>{setDescData(response.data[0]),setTime(response.data[0].time),setQuestData(response.data[1])})
+      .catch(error=>console.log(error))
+  },[]
+  )
+
+  useEffect(() => {
+        setSeconds(time * 60);
+  }, [time]);
+
+    // const initialSeconds = ({time} * 60);
   
-  const [seconds, setSeconds] = useState(initialSeconds);
+  const [seconds, setSeconds] = useState(time*60);
   const [isActive, setIsActive] = useState(false);
     
 
@@ -68,30 +82,43 @@ setIsActive(true)
     const {id}=params
 
     useEffect(() => {
-      let intervalId;
-      
-      if (isActive && seconds > 0) {
-        intervalId = setInterval(() => {
-          setSeconds(prevSeconds => prevSeconds - 1);
-        }, 1000);
-      } else if (seconds <= 0) {
-        setIsActive(false); 
-  //       const dataset={
-  //         name:name,
-  //         email:email,
-  //         score:score
-  //       }
-          
-  // axios.post('http://127.0.0.1:4002/score/add/',dataset)
-  // .then(response=>{console.log("data Saved")})
-  // .catch(error=>console.log(error))
-          setShowModel(true)
+        let intervalId;
+        
+        if (isActive && seconds > 0) {
+            intervalId = setInterval(() => {
+            setSeconds(prevSeconds => prevSeconds - 1);
+            }, 1000);
+        } else if (seconds <= 0) {
+            clearInterval(intervalId);
+            if (!isDataSaved) { 
+                saveData();
+                setIsDataSaved(true); 
+              }
+            setIsActive(false); 
+           setShowModel(true)
+                        
+        }
+        
+            
+        return () => clearInterval(intervalId);
+    }, [isActive,seconds]);
+
+
   
-        clearInterval(intervalId);
-      }
-     
-      return () => clearInterval(intervalId);
-    }, [isActive, seconds]);
+const saveData=()=>{
+    const dataset={
+        uid:id,
+        name:name,
+        email:email,
+        score:score
+        }
+        
+        axios.post('http://127.0.0.1:4002/score/add/',dataset)
+        .then(response=>{console.log("data Saved")})
+        .catch(error=>console.log(error))
+}
+
+
   
     const formatTime = (totalSeconds) => {
       const minutes = Math.floor(totalSeconds / 60);
@@ -112,16 +139,10 @@ setIsActive(true)
           
          })
   
-console.log(quest_data.length);
 
 
-    useEffect(()=>{
-        axios.get(`http://127.0.0.1:4002/java/${id}`)
-        .then(response=>{setDescData(response.data[0]),setQuestData(response.data[1])})
-        .catch(error=>console.log(error))
-    },[]
-    )
 
+    
 
        const handle=(event,index)=>{
         const new_data=[...ans]
@@ -135,6 +156,7 @@ console.log(quest_data.length);
         event.preventDefault()
 
         const dataset={
+            uid:id,
             name:name,
             email:email,
             score:score
@@ -214,6 +236,7 @@ quest_data.map((javaquestion,index)=>{
         <button onClick={toggleVisibility} className='btn btn-primary'>
         {isVisible}START THE QUIZ
       </button>
+      
        </div>
        
       
@@ -227,6 +250,8 @@ quest_data.map((javaquestion,index)=>{
    <center>
     <label htmlFor="" style={{fontSize:"25px", fontFamily:"sans-serif"}}>{desc_data.name}</label><br />
     <label htmlFor="" style={{fontSize:"25px", fontFamily:"sans-serif"}}>{desc_data.des}</label><br />
+    
+   
     </center>    
     <div>
     {data}
